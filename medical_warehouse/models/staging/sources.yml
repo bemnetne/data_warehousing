@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+
+    tables:
+      - name: telegram_messages
+
+        columns:
+
+          - name: message_id
+            tests:
+              - not_null
+
+          - name: channel_name
+            tests:
+              - not_null
+
+          - name: message_date
+            tests:
+              - not_null
