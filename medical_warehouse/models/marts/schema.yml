@@ -1,0 +1,121 @@
+version: 2
+
+models:
+
+  - name: dim_channels
+    description: >
+      Dimension table containing summary information about each Telegram
+      channel, including category, posting activity, and average engagement.
+
+    columns:
+
+      - name: channel_key
+        description: Surrogate primary key for the channel.
+        tests:
+          - unique
+          - not_null
+
+      - name: channel_name
+        description: Standardized name of the Telegram channel.
+        tests:
+          - unique
+          - not_null
+
+      - name: channel_type
+        description: Business category of the channel (Medical, Pharmaceutical, Cosmetics).
+
+      - name: first_post_date
+        description: Date of the earliest message posted by the channel.
+
+      - name: last_post_date
+        description: Date of the latest message posted by the channel.
+
+      - name: total_posts
+        description: Total number of messages published by the channel.
+
+      - name: avg_views
+        description: Average number of views received by channel messages.
+
+
+  - name: dim_dates
+    description: >
+      Date dimension used for time-based analysis of Telegram messages.
+
+    columns:
+
+      - name: date_key
+        description: Surrogate key in YYYYMMDD format.
+        tests:
+          - unique
+          - not_null
+
+      - name: full_date
+        description: Calendar date.
+
+      - name: day_of_week
+        description: Numeric day of week (0 = Sunday).
+
+      - name: day_name
+        description: Name of the weekday.
+
+      - name: week_of_year
+        description: ISO week number.
+
+      - name: month
+        description: Month number.
+
+      - name: month_name
+        description: Month name.
+
+      - name: quarter
+        description: Quarter of the year.
+
+      - name: year
+        description: Calendar year.
+
+      - name: is_weekend
+        description: Indicates whether the date falls on a weekend.
+
+
+  - name: fct_messages
+    description: >
+      Fact table containing individual Telegram messages and associated
+      engagement metrics.
+
+    columns:
+
+      - name: message_id
+        description: Original Telegram message identifier.
+        tests:
+          - not_null
+
+      - name: channel_key
+        description: Foreign key referencing dim_channels.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+
+      - name: date_key
+        description: Foreign key referencing dim_dates.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_dates')
+              field: date_key
+
+      - name: message_text
+        description: Cleaned Telegram message content.
+
+      - name: message_length
+        description: Number of characters in the message.
+
+      - name: view_count
+        description: Number of views received by the message.
+
+      - name: forward_count
+        description: Number of times the message was forwarded.
+
+      - name: has_image
+        description: Indicates whether the message contains an image.

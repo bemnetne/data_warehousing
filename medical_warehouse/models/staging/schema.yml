@@ -1,0 +1,40 @@
+version: 2
+
+models:
+
+  - name: stg_telegram_messages
+    description: >
+      Cleaned and standardized Telegram messages loaded from the raw layer.
+      This staging model performs type casting, filtering, and feature engineering.
+
+    columns:
+
+      - name: message_id
+        description: Original Telegram message identifier.
+
+      - name: channel_name
+        description: Standardized Telegram channel name.
+
+      - name: message_date
+        description: Timestamp when the message was published.
+
+      - name: message_text
+        description: Cleaned Telegram message text.
+
+      - name: views
+        description: Number of views received.
+
+      - name: forwards
+        description: Number of forwards.
+
+      - name: has_media
+        description: Indicates whether the original message contains media.
+
+      - name: image_path
+        description: Local path to the downloaded image.
+
+      - name: message_length
+        description: Number of characters in the message.
+
+      - name: has_image
+        description: Indicates whether an image file exists for the message.

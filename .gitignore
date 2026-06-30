@@ -4,6 +4,9 @@ __pycache__/
 *$py.class
 # Environment variables
 .env
+
+*.session
+medical_session.session
 # C extensions
 *.so
 data/
