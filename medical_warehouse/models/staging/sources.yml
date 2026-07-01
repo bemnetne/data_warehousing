@@ -20,3 +20,5 @@ sources:
           - name: message_date
             tests:
               - not_null
+      - name: image_detections
+        description: YOLO object detection results loaded from detections.csv
