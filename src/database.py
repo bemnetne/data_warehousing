@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 from src.config import DB_HOST,DB_NAME,DB_USER,DB_PASSWORD,DB_PORT
 import os
+from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 print(f"DB_HOST = {DB_HOST}")
@@ -18,3 +19,16 @@ DATABASE_URL = (
 )
 
 engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+def get_db():
+    db = SessionLocal()
+
+    try:
+        yield db
+
+    finally:
+        db.close()

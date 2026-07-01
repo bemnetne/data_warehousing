@@ -56,11 +56,14 @@ df["has_media"] = df["has_media"].astype(bool)
 
 # print(duplicates[["message_id", "channel_name"]].sort_values("message_id"))
 # print(f"Duplicate message IDs: {duplicates['message_id'].nunique()}")
-df.head(10).to_sql(
+df = df.drop_duplicates(
+    subset=["message_id", "channel_name"]
+)
+df.to_sql(
     "telegram_messages",
     con=engine,
     schema="raw",
-    if_exists="append",
+    if_exists="replace",
     index=False
 )
 
