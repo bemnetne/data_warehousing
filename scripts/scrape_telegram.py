@@ -3,7 +3,7 @@ import json
 import logging
 from pathlib import Path
 from collections import defaultdict
-from tg_client import client
+from src.tg_client import client
 from src.channels import CHANNELS
 
 
