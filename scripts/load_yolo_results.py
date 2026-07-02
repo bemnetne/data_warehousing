@@ -21,7 +21,7 @@ df.to_sql(
     "image_detections",
     engine,
     schema="raw",
-    if_exists="replace",
+    if_exists="append",
     index=False
 )
 
