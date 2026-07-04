@@ -59,11 +59,15 @@ df["has_media"] = df["has_media"].astype(bool)
 df = df.drop_duplicates(
     subset=["message_id", "channel_name"]
 )
+from sqlalchemy import text
+
+with engine.begin() as conn:
+    conn.execute(text("TRUNCATE TABLE raw.telegram_messages"))
 df.to_sql(
     "telegram_messages",
     con=engine,
     schema="raw",
-    if_exists="replace",
+    if_exists="append",
     index=False
 )
 

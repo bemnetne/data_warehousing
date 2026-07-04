@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 # Environment variables
 .env
-
+.dagster/
 *.session
 medical_session.session
 # C extensions

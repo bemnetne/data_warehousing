@@ -2,57 +2,64 @@ from dagster import In, Nothing, op
 import subprocess
 import sys
 
+
+def run_command(command, cwd=None):
+    result = subprocess.run(
+        command,
+        cwd=cwd,
+        capture_output=True,
+        text=True
+    )
+
+    print("========== STDOUT ==========")
+    print(result.stdout)
+
+    print("========== STDERR ==========")
+    print(result.stderr)
+
+    result.check_returncode()
+
 @op
 def scrape_telegram_data():
-    subprocess.run(
-        subprocess.run(
-        [sys.executable, "-m", "scripts.scrape_telegram"],
-        check=True
-)
+    run_command(
+        [sys.executable, "-m", "scripts.scrape_telegram"]
     )
 
 
 @op(ins={"start": In(Nothing)})
 def load_raw_to_postgres():
-    subprocess.run(
-        [sys.executable, "-m", "scripts.load_raw_to_postgres"],
-        check=True
+    run_command(
+        [sys.executable, "-m", "scripts.load_raw_to_postgres"]
     )
 
 @op(ins={"start": In(Nothing)})
 def load_yolo_results():
-    subprocess.run(
-        [sys.executable, "-m", "scripts.load_yolo_results"],
-        check=True
+    run_command(
+        [sys.executable, "-m", "scripts.load_yolo_results"]
     )
 @op(ins={"start": In(Nothing)})
 def run_dbt_transformations():
-    subprocess.run(
+    run_command(
         ["dbt", "build"],
-        cwd="medical_warehouse",
-        check=True
+        cwd="medical_warehouse"
     )
 
 
 @op(ins={"start": In(Nothing)})
 def run_yolo_enrichment():
-    subprocess.run(
-        [sys.executable, "-m", "src.yolo_detect"],
-        check=True
+    run_command(
+        [sys.executable, "-m", "src.yolo_detect"]
     )
 
-    subprocess.run(
-        [sys.executable, "-m", "src.classify_images"],
-        check=True
+    run_command(
+        [sys.executable, "-m", "src.classify_images"]
     )
 
-    subprocess.run(
-        [sys.executable, "-m", "scripts.load_yolo_results"],
-        check=True
+    run_command(
+        [sys.executable, "-m", "scripts.load_yolo_results"]
     )
 
-    subprocess.run(
+    run_command(
         ["dbt", "build"],
-        cwd="medical_warehouse",
-        check=True
+        cwd="medical_warehouse"
     )

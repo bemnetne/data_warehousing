@@ -5,7 +5,7 @@ from pathlib import Path
 from collections import defaultdict
 from src.tg_client import client
 from src.channels import CHANNELS
-
+from telethon.errors import FileReferenceExpiredError
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 LOG_DIR = PROJECT_ROOT / "logs"
@@ -47,10 +47,16 @@ async def scrape_channel(channel_name):
                 channel_image_dir /
                 f"{message.id}.jpg"
             )
-
-            await message.download_media(
-                file=str(image_path)
-            )
+            if message.photo:
+                try:
+                    await message.download_media(
+                        file=image_path
+                    )
+                except FileReferenceExpiredError:
+                    logger.warning(
+                        f"Skipping expired media for message {message.id}"
+                    )
+            
 
         partition_date = message.date.strftime("%Y-%m-%d")
 

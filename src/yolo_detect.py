@@ -1,6 +1,7 @@
 from ultralytics import YOLO
 from pathlib import Path
 import pandas as pd
+import cv2
 
 # Load YOLO Model
 # ----------------------------------------------------
@@ -49,7 +50,26 @@ for image_path in image_files:
     channel_name = image_path.parent.name
 
     message_id = image_path.stem
+    try:
 
+        if not image_path.exists():
+            print(f"Missing file: {image_path}")
+            continue
+
+        if image_path.stat().st_size == 0:
+            print(f"Empty file: {image_path}")
+            continue
+
+        image = cv2.imread(str(image_path))
+
+        if image is None:
+            print(f"Unreadable image: {image_path}")
+            continue
+
+    except cv2.error as e:
+        print(f"OpenCV failed on {image_path}")
+        print(e)
+        continue
     results = model(image_path)
 
     for result in results:
